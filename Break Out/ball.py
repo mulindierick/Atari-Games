@@ -2,11 +2,11 @@ import arcade
 from random import randint
 
 class Ball:
-    def __init__(self, x, y):
+    def __init__(self, x, y, x_dir, y_dir):
         self.center_x = randint(x, y)
         self.center_y = randint(x, y)
-        self.x_dir = 4
-        self.y_dir = -4
+        self.x_dir = x_dir
+        self.y_dir = y_dir
         
     def on_draw(self):
         arcade.draw_circle_filled(self.center_x, self.center_y, 10, arcade.color.GO_GREEN)

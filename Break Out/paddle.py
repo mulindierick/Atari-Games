@@ -5,7 +5,7 @@ class Paddle:
         self.center_y = y
 
     def on_draw(self):
-        arcade.draw_rectangle_filled(self.center_x, self.center_y, 60, 20, arcade.color.TOMATO)
+        arcade.draw_rectangle_filled(self.center_x, self.center_y, 80, 20, arcade.color.TOMATO)
 
 
 

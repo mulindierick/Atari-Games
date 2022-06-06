@@ -6,8 +6,8 @@ from targets import Target
 class Pong(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
-        self.paddle = Paddle(250, 20)
-        self.ball = Ball(50, 250, 2, -2)
+        self.paddle = Paddle(250, 10)
+        self.ball = Ball(50, 250, 4, -4)
 
         #track user score
         self.score = 0
@@ -39,7 +39,7 @@ class Pong(arcade.Window):
     
     # collision btn target and ball
     def ball_target_collision(self, target, ball):
-        if (target.center_x - 15 < ball.center_x < target.center_x + 15) and (target.center_y + 10  > ball.center_y > target.center_y - 10 ):
+        if (target.center_x - 15 < ball.center_x +10 and ball.center_x < target.center_x + 15) and (target.center_y + 10  > ball.center_y and ball.center_y > target.center_y - 10 ):
             if target.center_y == 300:
                 self.score += 1 
             elif target.center_y == 320:
@@ -50,10 +50,9 @@ class Pong(arcade.Window):
                 self.score += 4 
             elif target.center_y == 380:
                 self.score += 5
-            #delete with something else other than index 
-            del self.targets[self.targets.index(target)]
-            ball.x_dir += 1
-            ball.y_dir -= -1
+            ball.x_dir += 0.2
+            ball.y_dir -= 0.2
+            self.targets.remove(target)
             ball.x_dir *= -1
             ball.y_dir *= -1
             
@@ -61,8 +60,6 @@ class Pong(arcade.Window):
     # draw on arcade window
     def on_draw(self):
         self.clear()
-        # display bricks
-        self.start_game()
         # display paddle
         self.paddle.on_draw()
         # display targets
@@ -87,8 +84,8 @@ class Pong(arcade.Window):
             self.score = 0
             self.targets = []
             self.start_game()
-            self.ball.x_dir = 2
-            self.ball.y_dir = -2
+            self.ball.x_dir = 4
+            self.ball.y_dir = -4
             self.ball.center_y = 250
             
             
@@ -101,5 +98,6 @@ class Pong(arcade.Window):
 
 
 arcade.window = Pong(500, 500, "Erick' Breakout Game")
+arcade.window.start_game()
 arcade.run()
 

@@ -2,18 +2,20 @@ import arcade
 from paddle import Paddle
 from ball import Ball
 from targets import Target
+from random import choice
 
 class Pong(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
         self.paddle = Paddle(250, 10)
-        self.ball = Ball(50, 250, 4, -4)
+        self.ball = Ball(10, 300, 4, -4, 1, self.width, self.height)
 
         #track user score
         self.score = 0
-        self.targets = []
+        
         
         # create targets at 5 levels
+        self.targets = []
     def start_game(self):
         space = 0
         while len(self.targets) < 85:
@@ -36,7 +38,6 @@ class Pong(arcade.Window):
             ball.x_dir *= -1
             ball.y_dir *= -1
 
-    
     # collision btn target and ball
     def ball_target_collision(self, target, ball):
         if (target.center_x - 15 < ball.center_x +10 and ball.center_x < target.center_x + 15) and (target.center_y + 10  > ball.center_y and ball.center_y > target.center_y - 10 ):
@@ -50,11 +51,13 @@ class Pong(arcade.Window):
                 self.score += 4 
             elif target.center_y == 380:
                 self.score += 5
-            ball.x_dir += 0.2
-            ball.y_dir -= 0.2
             self.targets.remove(target)
-            ball.x_dir *= -1
-            ball.y_dir *= -1
+            ball.x_dir *= choice([-1, -1.05])
+            ball.y_dir *= choice([-1, -1.05])
+            
+            #increase speed if speed is below max speed
+            if ball.speed < 5:
+                ball.speed += 0.05
             
             
     # draw on arcade window
@@ -71,8 +74,8 @@ class Pong(arcade.Window):
         
         #target and ball collision
         if len(self.targets) > 0:
-            for target in self.targets:
-                self.ball_target_collision(target, self.ball)
+            for t in range(len(self.targets) -1, -1, -1):
+                self.ball_target_collision(self.targets[t], self.ball)
                 if len(self.targets) == 0:
                     break
 
@@ -80,13 +83,14 @@ class Pong(arcade.Window):
         arcade.draw_text("Your score is:" + " " + str(self.score), 200, 450)
 
         # reset game
-        if self.ball.center_y < 0:
+        if self.ball.center_y < 0 or len(self.targets) == 0:
             self.score = 0
             self.targets = []
             self.start_game()
             self.ball.x_dir = 4
             self.ball.y_dir = -4
             self.ball.center_y = 250
+            self.ball.speed = 1
             
             
     # move paddle by key press

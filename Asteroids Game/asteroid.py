@@ -106,4 +106,3 @@ class Pong(arcade.Window):
 
 arcade.window = Pong(500, 500, "Erick' Asteroid Game")
 arcade.run()
-

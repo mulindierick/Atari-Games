@@ -3,7 +3,7 @@ import arcade
 from random import randint
 from random import choice
 
-class Bullet:
+class Torpedo:
     def __init__(self, x, y, x_dir, y_dir, speed):
         self.center_x = x
         self.center_y = y

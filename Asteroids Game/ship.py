@@ -1,7 +1,7 @@
 from turtle import clear
 import arcade
 from random import randint
-class Paddle:
+class Ship:
     def __init__(self, x, y, length, width, color, breadth):
         self.center_x = x
         self.center_y = y

@@ -1,6 +1,4 @@
-from turtle import clear
 import arcade
-from random import randint
 class Ship:
     def __init__(self, x, y, length, width, color, breadth):
         self.center_x = x

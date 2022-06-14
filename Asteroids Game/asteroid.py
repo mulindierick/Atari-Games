@@ -1,7 +1,5 @@
-from turtle import clear
 import arcade
 from random import randint
-from random import choice
 
 class Asteroid:
     def __init__(self, x, y):

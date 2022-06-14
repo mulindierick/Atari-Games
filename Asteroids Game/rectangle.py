@@ -1,6 +1,4 @@
-from turtle import clear
 import arcade
-from random import randint
 class Rectangle:
     def __init__(self, x, y):
         self.center_x = x

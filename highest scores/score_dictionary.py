@@ -14,7 +14,7 @@ except:
 
 
 quit = False
-while not quit:
+while not quit:mike
     name = input("enter name: " ).lower()
     if name in score_dict.keys():
         print(score_dict[name])

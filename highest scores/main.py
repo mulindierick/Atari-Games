@@ -24,16 +24,6 @@ class Pong(arcade.Window):
         self.highest_scores = []
         self.username = ""
         self.asteroids = []
-
-
-        # read scores
-        try:
-            read_scores = open("highest scores/scores.txt", "r")
-            for line in read_scores.readlines():
-                print(line)
-            read_scores.close()
-        except:
-            print("no scores to read")
             
         # create asteroids 
         while len(self.asteroids) < 5: self.asteroids.append(Asteroid(50, 500))
@@ -129,12 +119,6 @@ class Pong(arcade.Window):
             self.score = 0
             self.username = ""
             self.get_username = True
-
-            # read file
-            # read_scores = open("highest scores/scores.txt", "r")
-            # for line in read_scores.readlines():
-            #     print(line)
-            # read_scores.close()
 
        # end game:
     def collide(self, ship, asteroid):

@@ -1,5 +1,3 @@
-erick:5
-mulindi:1
-nazeli:0
-ark:11
-karitk:0
+erick:2
+mike:1
+jake:6

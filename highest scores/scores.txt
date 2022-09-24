@@ -1,3 +1,0 @@
-erick:2
-mike:1
-jake:6

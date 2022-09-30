@@ -10,10 +10,5 @@ class Centipede:
         self.color = arcade.color.RED
         
     def on_draw(self):
-        arcade.draw_circle_outline(self.center_x, self.center_y, 10, self.color)
+        arcade.draw_circle_filled(self.center_x, self.center_y, 10, self.color)
         self.center_x += self.x_dir * self.speed
-        # if self.center_x > 1000:
-        #     self.x_dir *= -1
-        # if self.center_x < 0:
-        #     self.x_dir *= -1
-

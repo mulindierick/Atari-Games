@@ -4,9 +4,9 @@ from obstacles import Obstacle
 from torpedo import Torpedo
 from rectangle import Rectangle
 from centipede import Centipede
-from math import cos, sin, radians
 
-class Pong(arcade.Window):
+
+class Main(arcade.Window):
     def __init__(self, w, h, title):
         super().__init__(w, h, title)
         self.circle = Circle(w/2, h/5, 35, 20, arcade.color.WHITE, 2)
@@ -21,34 +21,37 @@ class Pong(arcade.Window):
         self.centipede_arr = []
 
         # create obstacles 
-        while len(self.obstacles) < 100: self.obstacles.append(Obstacle(120, 1000))
-        while len(self.centipede_arr) < 15: self.centipede_arr.append(Centipede(w/2 - (len(self.centipede_arr) * 20), h, 1, 1, 2))
+        while len(self.obstacles) < 30: self.obstacles.append(Obstacle(950, 450))
+
+        # create centipede
+        while len(self.centipede_arr) < 10: self.centipede_arr.append(Centipede(w/2 - (len(self.centipede_arr) * 20), h, 1, 1, 5))
 
     # collision btn torpedo and obstacle
     def torpedo_obstacle_collision(self, torpedo, obstacle):
-        if torpedo and (torpedo.center_x - 10 < obstacle.center_x < torpedo.center_x + 10) and (torpedo.center_y + 15  > obstacle.center_y > torpedo.center_y - 15 ):
+        if torpedo and (torpedo.center_x - 15 < obstacle.center_x < torpedo.center_x + 15) and (torpedo.center_y + 15  > obstacle.center_y > torpedo.center_y - 15 ):
             self.score += 1
             self.obstacles.remove(obstacle)
             self.torpedo = None
-
+    
      # collision btn torpedo and centipede
     def torpedo_centipede_collision(self, torpedo, centipede):
-        if torpedo and (torpedo.center_x - 10 < centipede.center_x < torpedo.center_x + 10) and (torpedo.center_y + 15  > centipede.center_y > torpedo.center_y - 15 ):
+        if torpedo and (torpedo.center_x - 15 < centipede.center_x < torpedo.center_x + 15) and (torpedo.center_y + 15  > centipede.center_y > torpedo.center_y - 15 ):
             self.score += 1
             self.centipede_arr.remove(centipede)
             self.torpedo = None
+            self.obstacles.append(Obstacle(950, 450))
     
-    # collision btn obstacle and centipede
-    def obstacle_centipede_collision(self, centipede, obstacle):
-        if obstacle and (obstacle.center_x - 10 < centipede.center_x < obstacle.center_x + 10) and (obstacle.center_y + 15  > centipede.center_y > obstacle.center_y - 15 ):
-           print(obstacle.center_x)
-           for centipede in self.centipede_arr:
-            if centipede.center_x >= obstacle.center_x:
-                centipede.x_dir *= -1
-                centipede.center_y -= 18
+    # collision between centipede and obstacle
+    def centipede_obstacle_collision(self, centipedes, obstacles):
+        for centipede in centipedes:
+            for obstacle in obstacles:
+                if obstacle and (obstacle.center_x - 15 < centipede.center_x < obstacle.center_x + 15) and (obstacle.center_y + 15  > centipede.center_y > obstacle.center_y - 15 ):
+                     centipede.x_dir *= -1
+                     centipede.center_y -= 18
         
     # draw on arcade window
     def on_draw(self):
+
         self.clear()
 
         # display circle, torpedo, rectangle
@@ -66,22 +69,19 @@ class Pong(arcade.Window):
                 centipede.x_dir *= -1
                 centipede.center_y -= 18
             self.torpedo_centipede_collision(self.torpedo, centipede)
-            
+        
+        # detect centipede obstacle collision
+        self.centipede_obstacle_collision(self.centipede_arr, self.obstacles)
 
-        # display particle system
-        if self.particlesys:
-            self.particlesys.display()
-            self.particlesys.update()
-               
+        # detect centipede circle collision
+        self.collide(self.centipede_arr, self.circle)
+
         #display obstacles
         for obstacle in self.obstacles:
             obstacle.on_draw()
             if obstacle.center_y < 0:
                 obstacle.center_y = 500
-            self.collide(self.circle, obstacle)
-            self.torpedo_obstacle_collision(self.torpedo, obstacle)
-            self.obstacle_centipede_collision(self.centipede_arr[0], obstacle)
-            
+            self.torpedo_obstacle_collision(self.torpedo, obstacle)            
 
         # write on window
         if self.circle: arcade.draw_text("Your score is:" + " " + str(self.score), 200, 450)
@@ -112,18 +112,31 @@ class Pong(arcade.Window):
     # start game
     def on_mouse_press(self, x: int, y: int, dx: int, dy: int):
         if self.rectangle and ( (self.rectangle.center_x - 60 < x < self.rectangle.center_x + 60) and ( self.rectangle.center_y - 20 < y < self.rectangle.center_y + 20 )):
-            self.circle = Circle(self.width/2, self.height/5, 35, 20, arcade.color.WHITE, 2)
-            self.obstacles = []
-            while len(self.obstacles) < 100: self.obstacles.append(Obstacle(120, 1000))
             self.rectangle = None
             self.score = 0
+            self.circle = Circle(self.width/2, self.height/5, 35, 20, arcade.color.WHITE, 2)
+            self.centipede = Centipede(self.width/2, self.height, 1, 1, 2)
+            self.obstacles = []
+            while len(self.obstacles) < 30: self.obstacles.append(Obstacle(950, 450))
+            self.centipede_arr = []
+            while len(self.centipede_arr) < 10: self.centipede_arr.append(Centipede(self.width/2 - (len(self.centipede_arr) * 20), self.height, 1, 1, 5))
+            
+    # end game:
+    def collide(self, centipedes, circle):
 
-
-       # end game:
-    def collide(self, circle, obstacle):
-        if circle and (circle.center_x - 15 < obstacle.center_x < circle.center_x + 15) and (circle.center_y + 10  > obstacle.center_y > circle.center_y - 10 ):
+        # end game if all segments of centipede are hit
+        if len(centipedes) == 0:
             self.circle = None
+            self.centipede_arr = []
             self.rectangle = Rectangle(self.width/2, self.height/2)
+        
+        # end game if any segment of centipede collides with circle
+        for centipede in centipedes:
+            if circle and (circle.center_x - 15 < centipede.center_x < circle.center_x + 15) and (circle.center_y + 15  > centipede.center_y > circle.center_y - 15 ):
+                self.circle = None
+                self.centipede_arr = []
+                self.rectangle = Rectangle(self.width/2, self.height/2)
 
-arcade.window = Pong(1000, 500, "Erick's Centipade Game")
+
+arcade.window = Main(1000, 500, "Erick's Centipade Game")
 arcade.run()

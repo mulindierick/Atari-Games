@@ -1,10 +1,10 @@
 import arcade
-from random import randint
+# from random import randint
 
 class Obstacle:
     def __init__(self, x, y):
-        self.center_x = randint(50, x)
-        self.center_y = randint(120, y)
+        self.center_x = x
+        self.center_y = y
         self.color = arcade.color.YELLOW
         
     def on_draw(self):

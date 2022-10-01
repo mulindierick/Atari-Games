@@ -4,6 +4,7 @@ from obstacles import Obstacle
 from torpedo import Torpedo
 from rectangle import Rectangle
 from centipede import Centipede
+from random import randint
 
 
 class Main(arcade.Window):
@@ -21,7 +22,7 @@ class Main(arcade.Window):
         self.centipede_arr = []
 
         # create obstacles 
-        while len(self.obstacles) < 30: self.obstacles.append(Obstacle(950, 450))
+        while len(self.obstacles) < 30: self.obstacles.append(Obstacle( randint(50, 950), randint(120, 450)))
 
         # create centipede
         while len(self.centipede_arr) < 10: self.centipede_arr.append(Centipede(w/2 - (len(self.centipede_arr) * 20), h, 1, 1, 5))
@@ -39,7 +40,7 @@ class Main(arcade.Window):
             self.score += 1
             self.centipede_arr.remove(centipede)
             self.torpedo = None
-            self.obstacles.append(Obstacle(950, 450))
+            self.obstacles.append(Obstacle( centipede.center_x, centipede.center_y))
     
     # collision between centipede and obstacle
     def centipede_obstacle_collision(self, centipedes, obstacles):
@@ -117,7 +118,7 @@ class Main(arcade.Window):
             self.circle = Circle(self.width/2, self.height/5, 35, 20, arcade.color.WHITE, 2)
             self.centipede = Centipede(self.width/2, self.height, 1, 1, 2)
             self.obstacles = []
-            while len(self.obstacles) < 30: self.obstacles.append(Obstacle(950, 450))
+            while len(self.obstacles) < 30: self.obstacles.append(Obstacle( randint(50, 950), randint(120, 450)))
             self.centipede_arr = []
             while len(self.centipede_arr) < 10: self.centipede_arr.append(Centipede(self.width/2 - (len(self.centipede_arr) * 20), self.height, 1, 1, 5))
             
